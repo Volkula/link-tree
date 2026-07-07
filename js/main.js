@@ -221,7 +221,8 @@ function applySeo(seo) {
 async function fetchJson(path) {
   const response = await fetch(path, { cache: 'no-store' });
   if (!response.ok) throw new Error(`Failed to load ${path}`);
-  return response.json();
+  const text = await response.text();
+  return JSON.parse(text.replace(/^\uFEFF/, ''));
 }
 
 function hydrateSections(sectionTemplates, datasets) {
@@ -235,21 +236,26 @@ function hydrateSections(sectionTemplates, datasets) {
 }
 
 async function loadConfig() {
-  const [seo, hero, footer, sections, links, projects] = await Promise.all([
-    fetchJson('content/seo.json'),
-    fetchJson('content/hero.json'),
-    fetchJson('content/footer.json'),
-    fetchJson('content/sections.json'),
-    fetchJson('content/links.json'),
-    fetchJson('content/projects.json'),
-  ]);
+  try {
+    const [seo, hero, footer, sections, links, projects] = await Promise.all([
+      fetchJson('content/seo.json'),
+      fetchJson('content/hero.json'),
+      fetchJson('content/footer.json'),
+      fetchJson('content/sections.json'),
+      fetchJson('content/links.json'),
+      fetchJson('content/projects.json'),
+    ]);
 
-  return {
-    seo,
-    hero,
-    footer,
-    sections: hydrateSections(sections, { links, projects }),
-  };
+    return {
+      seo,
+      hero,
+      footer,
+      sections: hydrateSections(sections, { links, projects }),
+    };
+  } catch {
+    // Backward compatibility for cached old clients.
+    return fetchJson('content/site.json');
+  }
 }
 
 function renderPage(config) {
