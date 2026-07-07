@@ -37,25 +37,77 @@ jobs:
           os.makedirs("content", exist_ok=True)
           os.makedirs("assets/works", exist_ok=True)
 
-          patterns = ("*.jpg", "*.jpeg", "*.png", "*.webp", "*.gif", "*.avif")
-          files = []
-          for pattern in patterns:
-            files.extend(glob.glob(os.path.join("assets", "works", pattern)))
-            files.extend(glob.glob(os.path.join("assets", "works", pattern.upper())))
+          image_exts = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"}
+          works_root = os.path.join("assets", "works")
 
-          unique_files = sorted(set(path.replace("\\", "/") for path in files))
-          items = []
-          for path in unique_files:
-            name = os.path.splitext(os.path.basename(path))[0]
-            title = name.replace("_", " ").replace("-", " ").strip()
-            items.append({"image": path, "title": title})
+          def norm(path):
+            return path.replace("\\", "/")
 
+          def title_from_slug(slug):
+            return slug.replace("_", " ").replace("-", " ").strip() or "Галерея"
+
+          def collect_images(folder):
+            out = []
+            for current, _, files in os.walk(folder):
+              for name in files:
+                ext = os.path.splitext(name)[1].lower()
+                if ext in image_exts:
+                  out.append(norm(os.path.join(current, name)))
+            return sorted(out)
+
+          galleries = []
+          for name in sorted(os.listdir(works_root)):
+            gallery_dir = os.path.join(works_root, name)
+            if not os.path.isdir(gallery_dir):
+              continue
+
+            images = collect_images(gallery_dir)
+            if not images:
+              continue
+
+            meta_path = os.path.join(gallery_dir, "meta.json")
+            meta = {}
+            if os.path.exists(meta_path):
+              with open(meta_path, "r", encoding="utf-8") as fp:
+                meta = json.load(fp) or {}
+
+            slug = name
+            title = meta.get("title") or title_from_slug(slug)
+            description = meta.get("description") or ""
+            cover_rel = meta.get("cover") or meta.get("preview")
+            cover = norm(os.path.join(gallery_dir, cover_rel)) if cover_rel else images[0]
+            if cover not in images:
+              cover = images[0]
+
+            galleries.append({
+              "slug": slug,
+              "title": title,
+              "description": description,
+              "cover": cover,
+              "galleryUrl": f"works.html#{slug}",
+              "count": len(images),
+              "images": [{"src": src} for src in images],
+            })
+
+          with open("content/work-galleries.json", "w", encoding="utf-8") as fp:
+            json.dump(galleries, fp, ensure_ascii=False, indent=2)
+
+          # Backward-compatible lightweight export used by older clients.
+          legacy_items = []
+          for gallery in galleries:
+            legacy_items.append({
+              "title": gallery["title"],
+              "image": gallery["cover"],
+              "description": gallery["description"],
+              "galleryUrl": gallery["galleryUrl"],
+            })
           with open("content/works.json", "w", encoding="utf-8") as fp:
-            json.dump(items, fp, ensure_ascii=False, indent=2)
+            json.dump(legacy_items, fp, ensure_ascii=False, indent=2)
           PY
 
           mkdir -p _site
           cp index.html _site/
+          cp works.html _site/
           cp -r css js assets content _site/
 
       - name: Upload artifact

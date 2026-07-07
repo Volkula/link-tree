@@ -272,7 +272,10 @@ function buildWorkCard(item, index) {
   const card = document.createElement('article');
   card.className = 'work-card';
   const title = item.title || `Работа ${index + 1}`;
-  card.innerHTML = `<img class="work-shot" src="${item.image}" alt="${item.alt || title}" loading="lazy"><p class="work-title">${title}</p>`;
+  const cover = item.cover || item.image;
+  const description = item.description || '';
+  const link = item.galleryUrl || `works.html#${item.slug || ''}`;
+  card.innerHTML = `<img class="work-shot" src="${cover}" alt="${item.alt || title}" loading="lazy"><div class="work-body"><p class="work-title">${title}</p><p class="work-desc">${description}</p><a class="work-link" href="${link}">Открыть галерею</a></div>`;
   return card;
 }
 
@@ -365,7 +368,9 @@ async function loadConfig() {
       fetchJson('content/links.json'),
       fetchJson('content/projects.json'),
       fetchJson('content/faq.json'),
-      fetchJson('content/works.json').catch(() => []),
+      fetchJson('content/work-galleries.json')
+        .catch(() => fetchJson('content/works.json'))
+        .catch(() => []),
     ]);
 
     return {
