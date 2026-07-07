@@ -27,15 +27,20 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Install image dependencies
+        run: python -m pip install --quiet pillow
+
       - name: Prepare site artifact
         run: |
           python - <<'PY'
           import glob
           import json
           import os
+          from PIL import Image
 
           os.makedirs("content", exist_ok=True)
           os.makedirs("assets/works", exist_ok=True)
+          os.makedirs(os.path.join("assets", "works", ".thumbs"), exist_ok=True)
 
           image_exts = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"}
           works_root = os.path.join("assets", "works")
@@ -54,6 +59,23 @@ jobs:
                 if ext in image_exts:
                   out.append(norm(os.path.join(current, name)))
             return sorted(out)
+
+          def create_thumb(src, slug):
+            base_name = os.path.splitext(os.path.basename(src))[0] + ".jpg"
+            out_dir = os.path.join("assets", "works", ".thumbs", slug)
+            os.makedirs(out_dir, exist_ok=True)
+            out_path = os.path.join(out_dir, base_name)
+            out_rel = norm(out_path)
+            try:
+              img = Image.open(src)
+              if img.mode not in ("RGB", "L"):
+                img = img.convert("RGB")
+              img.thumbnail((560, 560))
+              img.save(out_path, format="JPEG", quality=82, optimize=True)
+            except Exception:
+              # Fallback: use original if thumbnail generation fails
+              return norm(src)
+            return out_rel
 
           galleries = []
           for name in sorted(os.listdir(works_root)):
@@ -79,14 +101,23 @@ jobs:
             if cover not in images:
               cover = images[0]
 
+            image_items = []
+            for src in images:
+              image_items.append({
+                "src": src,
+                "thumb": create_thumb(src, slug),
+              })
+
+            cover_thumb = create_thumb(cover, slug)
             galleries.append({
               "slug": slug,
               "title": title,
               "description": description,
               "cover": cover,
+              "coverThumb": cover_thumb,
               "galleryUrl": f"works.html#{slug}",
               "count": len(images),
-              "images": [{"src": src} for src in images],
+              "images": image_items,
             })
 
           with open("content/work-galleries.json", "w", encoding="utf-8") as fp:
@@ -98,6 +129,7 @@ jobs:
             legacy_items.append({
               "title": gallery["title"],
               "image": gallery["cover"],
+              "thumb": gallery.get("coverThumb", gallery["cover"]),
               "description": gallery["description"],
               "galleryUrl": gallery["galleryUrl"],
             })

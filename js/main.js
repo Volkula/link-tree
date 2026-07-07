@@ -273,9 +273,10 @@ function buildWorkCard(item, index) {
   card.className = 'work-card';
   const title = item.title || `Работа ${index + 1}`;
   const cover = item.cover || item.image;
+  const preview = item.coverThumb || item.thumb || cover;
   const description = item.description || '';
   const link = item.galleryUrl || `works.html#${item.slug || ''}`;
-  card.innerHTML = `<img class="work-shot" src="${cover}" alt="${item.alt || title}" loading="lazy"><div class="work-body"><p class="work-title">${title}</p><p class="work-desc">${description}</p><a class="work-link" href="${link}">Открыть галерею</a></div>`;
+  card.innerHTML = `<img class="work-shot" src="${preview}" alt="${item.alt || title}" loading="lazy"><div class="work-body"><p class="work-title">${title}</p><p class="work-desc">${description}</p><a class="work-link" href="${link}">Открыть галерею</a></div>`;
   return card;
 }
 

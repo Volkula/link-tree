@@ -7,10 +7,11 @@ async function fetchJson(path) {
 
 function createImageCard(image, index, title) {
   const src = typeof image === 'string' ? image : image.src;
+  const thumb = typeof image === 'string' ? image : (image.thumb || image.src);
   const alt = typeof image === 'string' ? `${title} — ${index + 1}` : (image.alt || `${title} — ${index + 1}`);
   const card = document.createElement('article');
   card.className = 'gallery-image-card';
-  card.innerHTML = `<img class="gallery-image" src="${src}" alt="${alt}" loading="lazy"><a class="gallery-original-link" href="${src}" target="_blank" rel="noopener noreferrer">Посмотреть оригинал</a>`;
+  card.innerHTML = `<img class="gallery-image" src="${thumb}" alt="${alt}" loading="lazy"><a class="gallery-original-link" href="${src}" target="_blank" rel="noopener noreferrer">Посмотреть оригинал</a>`;
   return card;
 }
 
