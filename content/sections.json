@@ -21,6 +21,15 @@
     },
     "dataSource": "projects",
     "bindKey": "projects",
-    "collapsedByDefault": false
+    "collapsedByDefault": true
+  },
+  {
+    "id": "faq-main",
+    "type": "faq",
+    "heading": "FAQ / Как работаем",
+    "subheading": "Быстрые ответы по заказам и разработке",
+    "dataSource": "faq",
+    "bindKey": "items",
+    "collapsedByDefault": true
   }
 ]

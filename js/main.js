@@ -182,6 +182,27 @@ function renderAppsSection(config) {
   return section;
 }
 
+function renderFaqSection(config) {
+  const section = document.createElement('section');
+  section.className = 'section section-faq';
+  section.appendChild(sectionHeader(config.heading, config.subheading));
+  const content = document.createElement('div');
+  content.className = 'section-content';
+
+  const list = document.createElement('div');
+  list.className = 'faq-list';
+  (config.items || []).forEach((item) => {
+    const details = document.createElement('details');
+    details.className = 'faq-item';
+    details.innerHTML = `<summary>${item.question || 'Вопрос'}</summary><p>${item.answer || ''}</p>`;
+    list.appendChild(details);
+  });
+
+  content.appendChild(list);
+  section.appendChild(content);
+  return section;
+}
+
 function renderUnknownSection(config) {
   const section = document.createElement('section');
   section.className = 'section';
@@ -199,6 +220,7 @@ function renderUnknownSection(config) {
 function renderSection(config) {
   if (config.type === 'links') return renderLinksSection(config);
   if (config.type === 'apps') return renderAppsSection(config);
+  if (config.type === 'faq') return renderFaqSection(config);
   return renderUnknownSection(config);
 }
 
@@ -237,20 +259,21 @@ function hydrateSections(sectionTemplates, datasets) {
 
 async function loadConfig() {
   try {
-    const [seo, hero, footer, sections, links, projects] = await Promise.all([
+    const [seo, hero, footer, sections, links, projects, faq] = await Promise.all([
       fetchJson('content/seo.json'),
       fetchJson('content/hero.json'),
       fetchJson('content/footer.json'),
       fetchJson('content/sections.json'),
       fetchJson('content/links.json'),
       fetchJson('content/projects.json'),
+      fetchJson('content/faq.json'),
     ]);
 
     return {
       seo,
       hero,
       footer,
-      sections: hydrateSections(sections, { links, projects }),
+      sections: hydrateSections(sections, { links, projects, faq }),
     };
   } catch {
     // Backward compatibility for cached old clients.
@@ -272,8 +295,10 @@ function renderPage(config) {
   (config.sections || []).forEach((section, index) => {
     const node = renderSection(section);
     const sectionId = section.id || `${section.type || 'section'}-${index}`;
+    const collapsedFlag =
+      section.collapsedByDefault ?? section.collapsed ?? section.initiallyCollapsed ?? false;
     app.appendChild(
-      makeCollapsibleSection(node, sectionId, section.collapsedByDefault, collapsedState),
+      makeCollapsibleSection(node, sectionId, collapsedFlag, collapsedState),
     );
   });
 

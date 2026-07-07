@@ -24,8 +24,13 @@
 
 - `links` — список ссылок с QR
 - `apps` — баннер + портфолио приложений
+- `faq` — список вопросов/ответов
 
 Добавлен UX для секций: каждый блок можно сворачивать/разворачивать, состояние сохраняется в `localStorage`.
+Флаг свёрнутости задается в `content/sections.json`:
+
+- `collapsedByDefault: true` (основной)
+- также поддерживаются алиасы `collapsed` и `initiallyCollapsed`
 
 ## Локальный просмотр
 
@@ -57,6 +62,7 @@ content/footer.json — футер
 content/sections.json — шаблоны секций
 content/links.json    — ссылки
 content/projects.json — проекты
+content/faq.json      — вопросы/ответы
 css/styles.css      — стили (адаптив)
 js/main.js          — рендер секций и QR
 assets/             — favicon, скриншоты приложений
