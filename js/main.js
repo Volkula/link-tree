@@ -130,6 +130,12 @@ function createLinkMedia(link) {
     }
     img.style.width = `${width}px`;
     img.style.height = `${height}px`;
+    img.style.objectFit = link.imageFit === 'contain' ? 'contain' : 'cover';
+    if (typeof link.imageRadius === 'number') {
+      img.style.borderRadius = `${link.imageRadius}px`;
+    } else if (typeof link.imageRadius === 'string') {
+      img.style.borderRadius = link.imageRadius;
+    }
     return img;
   }
 

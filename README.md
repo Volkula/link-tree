@@ -77,6 +77,16 @@ assets/             — favicon, скриншоты приложений
 4. `content/sections.json` — порядок секций, заголовки, `collapsedByDefault`, привязка dataSource
 5. Добавляйте изображения в `assets/screenshots/` и указывайте путь в `projects.json`
 
+### Картинки в карточках ссылок
+
+В `content/links.json` у элемента ссылки можно использовать:
+
+- `image` — путь к изображению (вместо `icon`)
+- `imageAlt` — alt-текст
+- `imageSize` — число или объект `{ "width": 40, "height": 40 }`
+- `imageFit` — `"cover"` или `"contain"`
+- `imageRadius` — число (px) или строка (`"50%"`, `"10px"` и т.д.)
+
 ## Лицензия
 
 Содержимое сайта — © mr.Volkula. Код репозитория можно использовать свободно.
