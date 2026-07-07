@@ -1,0 +1,26 @@
+﻿[
+  {
+    "id": "links-main",
+    "type": "links",
+    "heading": "Связаться",
+    "subheading": "Заказы, каналы и соцсети",
+    "dataSource": "links",
+    "bindKey": "items",
+    "collapsedByDefault": false
+  },
+  {
+    "id": "apps-main",
+    "type": "apps",
+    "heading": "Приложения на заказ",
+    "subheading": "Браузерные инструменты, генераторы, тренажеры — пишу под задачу",
+    "banner": {
+      "title": "Разработка веб-приложений",
+      "description": "Нужен генератор, конфигуратор, тренажер или утилита в браузере? Соберу от идеи до деплоя на GitHub Pages или ваш хостинг.",
+      "ctaLabel": "Обсудить проект в Telegram",
+      "ctaUrl": "https://t.me/Volkula"
+    },
+    "dataSource": "projects",
+    "bindKey": "projects",
+    "collapsedByDefault": false
+  }
+]

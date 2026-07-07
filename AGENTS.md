@@ -14,8 +14,10 @@
 |------|------|
 | `index.html` | Каркас страницы, подключение шрифтов (Cinzel + Manrope), CDN qrcode |
 | `css/styles.css` | Вся вёрстка; mobile-first, `--max-width: 680px` |
-| `content/site.json` | **Единственный источник данных**: SEO, hero, footer, `sections[]` |
-| `js/main.js` | Рендерер JSON-секций, мини-QR на кнопках, модалка с крупным QR |
+| `content/seo.json`, `content/hero.json`, `content/footer.json` | Базовые тексты страницы |
+| `content/sections.json` | Шаблоны секций (`type`, `heading`, `dataSource`, `collapsedByDefault`) |
+| `content/links.json`, `content/projects.json` | Отдельные наборы данных для секций |
+| `js/main.js` | Рендерер JSON-секций, авто-склейка данных, мини-QR и модалка |
 | `assets/screenshots/` | PNG-скриншоты демо-приложений (1280×800) |
 | `.github/workflows/deploy.yml` | Деплой корня репозитория на GitHub Pages |
 
@@ -23,10 +25,11 @@
 
 ## Как менять контент
 
-1. **Новая ссылка** — объект в `sections[]` у секции `type: "links"` в `items[]`.
-2. **Новый проект** — объект в `sections[]` у секции `type: "apps"` в `projects[]`.
-3. **Скриншот** — положить PNG в `assets/screenshots/`, обновить путь в `content/site.json`.
-4. **Новый тип блока** — добавить новую секцию в JSON и обработчик в `renderSection()` в `js/main.js`.
+1. **Новая ссылка** — объект в `content/links.json`.
+2. **Новый проект** — объект в `content/projects.json`.
+3. **Скриншот** — положить PNG в `assets/screenshots/`, обновить путь в `content/projects.json`.
+4. **Порядок/сворачивание секций** — править `content/sections.json` (`collapsedByDefault`).
+5. **Новый тип блока** — добавить новую секцию в `sections.json` и обработчик в `renderSection()` в `js/main.js`.
 
 Иконки ссылок — inline SVG в `ICONS` в `js/main.js`.
 

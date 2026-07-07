@@ -5,6 +5,7 @@ const ICONS = {
 
 const APP_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 20h8M12 18v2"/><path d="M7 9l3 3-3 3M12 15h5"/></svg>';
 const AVATAR_ICON = '<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="58" stroke="currentColor" stroke-width="2" opacity="0.35"/><path d="M38 78c4-18 14-28 22-28s18 10 22 28" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="46" cy="52" r="4" fill="currentColor"/><circle cx="74" cy="52" r="4" fill="currentColor"/><path d="M28 42c8-16 24-24 32-24s24 8 32 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/></svg>';
+const COLLAPSE_KEY = 'barklair:collapsed-sections:v1';
 
 function hasQrSupport() {
   return typeof QRCode !== 'undefined' && typeof QRCode.toCanvas === 'function';
@@ -24,6 +25,59 @@ function sectionHeader(heading, subheading) {
   head.className = 'section-head';
   head.innerHTML = `<h2>${heading || ''}</h2><p>${subheading || ''}</p>`;
   return head;
+}
+
+function loadCollapsedState() {
+  try {
+    const raw = localStorage.getItem(COLLAPSE_KEY);
+    const parsed = raw ? JSON.parse(raw) : {};
+    return typeof parsed === 'object' && parsed ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveCollapsedState(state) {
+  try {
+    localStorage.setItem(COLLAPSE_KEY, JSON.stringify(state));
+  } catch {
+    // Ignore storage errors in private mode.
+  }
+}
+
+function makeCollapsibleSection(section, sectionId, collapsedByDefault, state) {
+  const content = section.querySelector('.section-content');
+  const head = section.querySelector('.section-head');
+  if (!content || !head) return section;
+
+  const collapseId = sectionId || `section-${Math.random().toString(36).slice(2, 8)}`;
+  const remembered = state[collapseId];
+  const isCollapsed = typeof remembered === 'boolean' ? remembered : Boolean(collapsedByDefault);
+  const title = head.querySelector('h2');
+  const titleText = title ? title.textContent : 'Раздел';
+  const contentId = `${collapseId}-content`;
+  content.id = contentId;
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'collapse-toggle';
+  button.setAttribute('aria-controls', contentId);
+  button.setAttribute('aria-expanded', String(!isCollapsed));
+  button.innerHTML = `<span>Свернуть: ${titleText}</span><span class="collapse-chevron" aria-hidden="true">▾</span>`;
+  head.appendChild(button);
+
+  const applyState = (collapsed) => {
+    content.hidden = collapsed;
+    section.classList.toggle('is-collapsed', collapsed);
+    button.setAttribute('aria-expanded', String(!collapsed));
+    button.firstElementChild.textContent = `${collapsed ? 'Развернуть' : 'Свернуть'}: ${titleText}`;
+    state[collapseId] = collapsed;
+    saveCollapsedState(state);
+  };
+
+  applyState(isCollapsed);
+  button.addEventListener('click', () => applyState(!content.hidden));
+  return section;
 }
 
 function openQrModal(label, url) {
@@ -92,7 +146,10 @@ function renderLinksSection(config) {
   const grid = document.createElement('div');
   grid.className = 'link-grid';
   (config.items || []).forEach((item) => grid.appendChild(buildLinkCard(item)));
-  section.appendChild(grid);
+  const content = document.createElement('div');
+  content.className = 'section-content';
+  content.appendChild(grid);
+  section.appendChild(content);
   return section;
 }
 
@@ -107,18 +164,21 @@ function renderAppsSection(config) {
   const section = document.createElement('section');
   section.className = 'section section-apps';
   section.appendChild(sectionHeader(config.heading, config.subheading));
+  const content = document.createElement('div');
+  content.className = 'section-content';
 
   if (config.banner) {
     const banner = document.createElement('div');
     banner.className = 'apps-banner';
     banner.innerHTML = `<div class="apps-banner-icon" aria-hidden="true">${APP_ICON}</div><div><h3>${config.banner.title || ''}</h3><p>${config.banner.description || ''}</p><a class="cta" href="${config.banner.ctaUrl}" target="_blank" rel="noopener noreferrer">${config.banner.ctaLabel || 'Написать'}</a></div>`;
-    section.appendChild(banner);
+    content.appendChild(banner);
   }
 
   const grid = document.createElement('div');
   grid.className = 'portfolio-grid';
   (config.projects || []).forEach((project) => grid.appendChild(buildPortfolioCard(project)));
-  section.appendChild(grid);
+  content.appendChild(grid);
+  section.appendChild(content);
   return section;
 }
 
@@ -126,10 +186,13 @@ function renderUnknownSection(config) {
   const section = document.createElement('section');
   section.className = 'section';
   section.appendChild(sectionHeader(config.heading || 'Раздел', config.subheading || ''));
+  const content = document.createElement('div');
+  content.className = 'section-content';
   const p = document.createElement('p');
   p.className = 'tagline';
   p.textContent = `Тип секции "${config.type}" пока не поддерживается.`;
-  section.appendChild(p);
+  content.appendChild(p);
+  section.appendChild(content);
   return section;
 }
 
@@ -155,10 +218,38 @@ function applySeo(seo) {
   if (canonical && seo.canonicalUrl) canonical.setAttribute('href', seo.canonicalUrl);
 }
 
-async function loadConfig() {
-  const response = await fetch('content/site.json', { cache: 'no-store' });
-  if (!response.ok) throw new Error('Failed to load content/site.json');
+async function fetchJson(path) {
+  const response = await fetch(path, { cache: 'no-store' });
+  if (!response.ok) throw new Error(`Failed to load ${path}`);
   return response.json();
+}
+
+function hydrateSections(sectionTemplates, datasets) {
+  return (sectionTemplates || []).map((section) => {
+    const dataSource = section.dataSource;
+    if (!dataSource) return section;
+    const sourceData = datasets[dataSource];
+    const targetKey = section.bindKey || 'items';
+    return { ...section, [targetKey]: sourceData };
+  });
+}
+
+async function loadConfig() {
+  const [seo, hero, footer, sections, links, projects] = await Promise.all([
+    fetchJson('content/seo.json'),
+    fetchJson('content/hero.json'),
+    fetchJson('content/footer.json'),
+    fetchJson('content/sections.json'),
+    fetchJson('content/links.json'),
+    fetchJson('content/projects.json'),
+  ]);
+
+  return {
+    seo,
+    hero,
+    footer,
+    sections: hydrateSections(sections, { links, projects }),
+  };
 }
 
 function renderPage(config) {
@@ -171,7 +262,14 @@ function renderPage(config) {
   hero.innerHTML = `<div class="avatar" aria-hidden="true">${AVATAR_ICON}</div><p class="eyebrow">${config.hero?.eyebrow || ''}</p><h1>${config.hero?.title || ''}</h1><p class="tagline">${config.hero?.tagline || ''}</p><p class="handle">${config.hero?.handle || ''}</p>`;
   app.appendChild(hero);
 
-  (config.sections || []).forEach((section) => app.appendChild(renderSection(section)));
+  const collapsedState = loadCollapsedState();
+  (config.sections || []).forEach((section, index) => {
+    const node = renderSection(section);
+    const sectionId = section.id || `${section.type || 'section'}-${index}`;
+    app.appendChild(
+      makeCollapsibleSection(node, sectionId, section.collapsedByDefault, collapsedState),
+    );
+  });
 
   const footer = document.createElement('footer');
   footer.className = 'footer';
@@ -195,7 +293,7 @@ async function init() {
     renderPage(config);
   } catch (error) {
     const app = document.getElementById('app');
-    if (app) app.innerHTML = '<p class="tagline">Не удалось загрузить контент сайта. Проверьте content/site.json.</p>';
+    if (app) app.innerHTML = '<p class="tagline">Не удалось загрузить контент сайта. Проверьте JSON-файлы в папке content/.</p>';
   }
 }
 

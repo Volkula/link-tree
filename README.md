@@ -17,7 +17,7 @@
 Сайт работает как легкий JSON-driven движок:
 
 - `index.html` — только каркас страницы
-- `content/site.json` — весь контент (тексты, ссылки, карточки, SEO, секции)
+- `content/*.json` — контент по отдельным файлам
 - `js/main.js` — универсальный рендерер секций
 
 Поддерживаемые типы секций сейчас:
@@ -25,7 +25,7 @@
 - `links` — список ссылок с QR
 - `apps` — баннер + портфолио приложений
 
-Чтобы добавить новый пункт/скрин/ссылку, правьте только `content/site.json`.
+Добавлен UX для секций: каждый блок можно сворачивать/разворачивать, состояние сохраняется в `localStorage`.
 
 ## Локальный просмотр
 
@@ -51,7 +51,12 @@ npx serve .
 
 ```
 index.html          — каркас страницы
-content/site.json   — контент и SEO
+content/seo.json    — SEO-мета
+content/hero.json   — шапка
+content/footer.json — футер
+content/sections.json — шаблоны секций
+content/links.json    — ссылки
+content/projects.json — проекты
 css/styles.css      — стили (адаптив)
 js/main.js          — рендер секций и QR
 assets/             — favicon, скриншоты приложений
@@ -60,11 +65,11 @@ assets/             — favicon, скриншоты приложений
 
 ## Обновление контента
 
-1. Откройте `content/site.json`
-2. Меняйте тексты в `hero`, `footer`, `seo`
-3. Добавляйте ссылки в секцию `type: "links"` (`items[]`)
-4. Добавляйте проекты в секцию `type: "apps"` (`projects[]`)
-5. Кладите новые изображения в `assets/screenshots/` и указывайте путь в `screenshot`
+1. `content/links.json` — ссылки и соцсети
+2. `content/projects.json` — карточки приложений и скриншоты
+3. `content/seo.json`, `content/hero.json`, `content/footer.json` — тексты страницы
+4. `content/sections.json` — порядок секций, заголовки, `collapsedByDefault`, привязка dataSource
+5. Добавляйте изображения в `assets/screenshots/` и указывайте путь в `projects.json`
 
 ## Лицензия
 

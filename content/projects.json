@@ -1,0 +1,23 @@
+﻿[
+  {
+    "title": "Litanies Generator",
+    "description": "Генератор литаний Warhammer 40k: библиотека текстов, слои, строгий ч/б экспорт 1024², имперские баннеры и 456 иконок фракций.",
+    "screenshot": "assets/screenshots/litanies-generator.png",
+    "demo": "https://litanies.volkula.com/",
+    "repo": "https://github.com/Volkula/litanies-generator"
+  },
+  {
+    "title": "Seal Generator",
+    "description": "Конвертер SVG -> STL в браузере: 3D-превью, штампы и печати, библиотека WH40k-гербов, пакетный экспорт и inverse-режим.",
+    "screenshot": "assets/screenshots/seal-generator.png",
+    "demo": "https://volkula.github.io/seal-generator/",
+    "repo": "https://github.com/Volkula/seal-generator"
+  },
+  {
+    "title": "Stratagem Hero",
+    "description": "Браузерный тренажер стратагем Helldivers 2: настраиваемые режимы, киоск, инвазии фракций, редактор и финальные экраны с QR.",
+    "screenshot": "assets/screenshots/strategem-hero.png",
+    "demo": "https://volkula.github.io/strategem-hero/",
+    "repo": "https://github.com/Volkula/strategem-hero"
+  }
+]
