@@ -350,10 +350,14 @@ function renderPage(config) {
   const app = document.getElementById('app');
   if (!app) return;
   applySeo(config.seo);
+  applyBrandArt(config.hero);
 
   const hero = document.createElement('header');
   hero.className = 'hero';
-  hero.innerHTML = `<div class="avatar" aria-hidden="true">${AVATAR_ICON}</div><p class="eyebrow">${config.hero?.eyebrow || ''}</p><h1>${config.hero?.title || ''}</h1><p class="tagline">${config.hero?.tagline || ''}</p><p class="handle">${config.hero?.handle || ''}</p>`;
+  const mascotHtml = config.hero?.mascotImage
+    ? `<img class="hero-mascot" src="${config.hero.mascotImage}" alt="${config.hero.mascotAlt || 'Маскот мастерской'}">`
+    : '';
+  hero.innerHTML = `${mascotHtml}<div class="avatar" aria-hidden="true">${AVATAR_ICON}</div><p class="eyebrow">${config.hero?.eyebrow || ''}</p><h1>${config.hero?.title || ''}</h1><p class="tagline">${config.hero?.tagline || ''}</p><p class="handle">${config.hero?.handle || ''}</p>`;
   app.appendChild(hero);
 
   const collapsedState = loadCollapsedState();
@@ -371,6 +375,25 @@ function renderPage(config) {
   footer.className = 'footer';
   footer.innerHTML = `<p><span class="footer-brand">${config.footer?.brand || ''}</span> — ${config.footer?.line1 || ''}</p><p class="footer-note">${config.footer?.line2 || ''}</p>`;
   app.appendChild(footer);
+}
+
+function applyBrandArt(heroConfig) {
+  const bgArt = document.getElementById('bg-art');
+  if (!bgArt) return;
+  const backgroundImage = heroConfig?.backgroundImage;
+  if (!backgroundImage) {
+    bgArt.classList.remove('is-active');
+    bgArt.style.backgroundImage = '';
+    return;
+  }
+
+  bgArt.style.backgroundImage = `url("${backgroundImage}")`;
+  const opacity = Number(heroConfig?.backgroundOpacity);
+  if (!Number.isNaN(opacity)) {
+    const clamped = Math.min(Math.max(opacity, 0), 1);
+    bgArt.style.setProperty('--bg-art-opacity', String(clamped));
+  }
+  bgArt.classList.add('is-active');
 }
 
 function bindModalEvents() {
