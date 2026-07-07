@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Берлогово — mr.Volkula</title>
-  <meta name="description" content="Крафт, 3D-печать, косплей и веб-приложения на заказ. Мастерская Берлогово — mr.Volkula.">
-  <meta property="og:title" content="Берлогово — mr.Volkula">
-  <meta property="og:description" content="Крафт, 3D-печать, косплей и приложения на заказ">
-  <meta property="og:url" content="https://lair.volkula.com">
+  <title>Berlogovo Link Page</title>
+  <meta name="description" content="Персональная страница мастерской">
+  <meta property="og:title" content="Berlogovo Link Page">
+  <meta property="og:description" content="Ссылки, портфолио и контакты">
+  <meta property="og:url" content="https://volkula.github.io/link-tree/">
   <meta name="theme-color" content="#0d0b09">
-  <link rel="canonical" href="https://lair.volkula.com">
+  <link rel="canonical" href="https://volkula.github.io/link-tree/">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,58 +20,7 @@
   <div class="bg-glow" aria-hidden="true"></div>
   <div class="bg-grid" aria-hidden="true"></div>
 
-  <main class="page">
-    <header class="hero">
-      <div class="avatar" aria-hidden="true">
-        <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="60" cy="60" r="58" stroke="currentColor" stroke-width="2" opacity="0.35"/>
-          <path d="M38 78c4-18 14-28 22-28s18 10 22 28" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-          <circle cx="46" cy="52" r="4" fill="currentColor"/>
-          <circle cx="74" cy="52" r="4" fill="currentColor"/>
-          <path d="M28 42c8-16 24-24 32-24s24 8 32 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
-        </svg>
-      </div>
-      <p class="eyebrow">Мастерская</p>
-      <h1>Берлогово</h1>
-      <p class="tagline">Крафт и штуки, сделанные своими руками. 3D-печать, покрас, косплей, пропы — и иногда ИТшка.</p>
-      <p class="handle">mr.Volkula</p>
-    </header>
-
-    <section class="section" aria-labelledby="links-heading">
-      <div class="section-head">
-        <h2 id="links-heading">Связаться</h2>
-        <p>Заказы, каналы и соцсети</p>
-      </div>
-      <div class="link-grid" id="link-grid"></div>
-    </section>
-
-    <section class="section section-apps" aria-labelledby="apps-heading">
-      <div class="section-head">
-        <h2 id="apps-heading">Приложения на заказ</h2>
-        <p>Браузерные инструменты, генераторы, тренажёры — пишу под задачу</p>
-      </div>
-      <div class="apps-banner">
-        <div class="apps-banner-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <rect x="3" y="4" width="18" height="14" rx="2"/>
-            <path d="M8 20h8M12 18v2"/>
-            <path d="M7 9l3 3-3 3M12 15h5"/>
-          </svg>
-        </div>
-        <div>
-          <h3>Разработка веб-приложений</h3>
-          <p>Нужен генератор, конфигуратор, тренажёр или утилита в браузере? Соберу от идеи до деплоя на GitHub Pages или ваш хостинг.</p>
-          <a class="cta" href="https://t.me/Volkula" target="_blank" rel="noopener noreferrer">Обсудить проект в Telegram</a>
-        </div>
-      </div>
-      <div class="portfolio-grid" id="portfolio-grid"></div>
-    </section>
-
-    <footer class="footer">
-      <p><span class="footer-brand">lair.volkula.com</span> — витрина мастерской Берлогово</p>
-      <p class="footer-note">Крафт © mr.Volkula · Приложения — по запросу</p>
-    </footer>
-  </main>
+  <main class="page" id="app"></main>
 
   <dialog class="qr-modal" id="qr-modal" aria-labelledby="qr-modal-title">
     <button class="qr-modal-close" type="button" aria-label="Закрыть">&times;</button>
@@ -81,7 +30,6 @@
   </dialog>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/main.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

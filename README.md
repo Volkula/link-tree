@@ -2,7 +2,7 @@
 
 Персональная витрина мастерской **Берлогово** — аналог Linktree, хостинг на GitHub Pages.
 
-**Сайт:** [lair.volkula.com](https://lair.volkula.com)
+**Сайт:** [volkula.github.io/link-tree](https://volkula.github.io/link-tree/)
 
 ## Что на странице
 
@@ -12,9 +12,20 @@
   - [Seal Generator](https://github.com/Volkula/seal-generator)
   - [Stratagem Hero](https://github.com/Volkula/strategem-hero)
 
-## Стек
+## Контентный движок
 
-Статический сайт: HTML, CSS, vanilla JS. QR-коды генерируются в браузере через [qrcode](https://www.npmjs.com/package/qrcode) (CDN).
+Сайт работает как легкий JSON-driven движок:
+
+- `index.html` — только каркас страницы
+- `content/site.json` — весь контент (тексты, ссылки, карточки, SEO, секции)
+- `js/main.js` — универсальный рендерер секций
+
+Поддерживаемые типы секций сейчас:
+
+- `links` — список ссылок с QR
+- `apps` — баннер + портфолио приложений
+
+Чтобы добавить новый пункт/скрин/ссылку, правьте только `content/site.json`.
 
 ## Локальный просмотр
 
@@ -35,26 +46,25 @@ npx serve .
 ### Первичная настройка (один раз)
 
 1. **Settings → Pages → Build and deployment → Source:** GitHub Actions
-2. **DNS** для `lair.volkula.com`:
-   - `CNAME` → `volkula.github.io`  
-   или `A`/`AAAA` на IP GitHub Pages (см. [документацию](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site))
-3. В репозитории уже есть файл `CNAME` с `lair.volkula.com`
 
 ## Структура
 
 ```
-index.html          — разметка
+index.html          — каркас страницы
+content/site.json   — контент и SEO
 css/styles.css      — стили (адаптив)
-js/data.js          — ссылки и портфолио
-js/main.js          — рендер карточек и QR
+js/main.js          — рендер секций и QR
 assets/             — favicon, скриншоты приложений
-CNAME               — кастомный домен
 .github/workflows/  — деплой на Pages
 ```
 
 ## Обновление контента
 
-Ссылки и проекты — в `js/data.js`. Скриншоты приложений лежат в `assets/screenshots/`.
+1. Откройте `content/site.json`
+2. Меняйте тексты в `hero`, `footer`, `seo`
+3. Добавляйте ссылки в секцию `type: "links"` (`items[]`)
+4. Добавляйте проекты в секцию `type: "apps"` (`projects[]`)
+5. Кладите новые изображения в `assets/screenshots/` и указывайте путь в `screenshot`
 
 ## Лицензия
 

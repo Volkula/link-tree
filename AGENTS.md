@@ -6,29 +6,29 @@
 
 Статическая link-in-bio страница для мастерской **Берлогово** (mr.Volkula): крафт, 3D-печать, косплей, веб-приложения на заказ.
 
-Продакшен: **https://lair.volkula.com** (GitHub Pages, custom domain через `CNAME`).
+Продакшен: **https://volkula.github.io/link-tree/** (GitHub Pages).
 
 ## Архитектура
 
 | Файл | Роль |
 |------|------|
-| `index.html` | Разметка, подключение шрифтов (Cinzel + Manrope), CDN qrcode |
+| `index.html` | Каркас страницы, подключение шрифтов (Cinzel + Manrope), CDN qrcode |
 | `css/styles.css` | Вся вёрстка; mobile-first, `--max-width: 680px` |
-| `js/data.js` | **Единственный источник данных** — массивы `LINKS` и `PORTFOLIO` |
-| `js/main.js` | Рендер карточек, мини-QR на кнопках, модалка с крупным QR |
+| `content/site.json` | **Единственный источник данных**: SEO, hero, footer, `sections[]` |
+| `js/main.js` | Рендерер JSON-секций, мини-QR на кнопках, модалка с крупным QR |
 | `assets/screenshots/` | PNG-скриншоты демо-приложений (1280×800) |
-| `CNAME` | `lair.volkula.com` — не удалять без согласования |
 | `.github/workflows/deploy.yml` | Деплой корня репозитория на GitHub Pages |
 
 Нет сборки, фреймворков и npm-зависимостей в проде. Не добавлять `package.json` / bundler без явной просьбы.
 
 ## Как менять контент
 
-1. **Новая ссылка** — объект в `LINKS` (`id`, `label`, `description`, `url`, `icon`: `telegram` | `tiktok`).
-2. **Новый проект** — объект в `PORTFOLIO` (`title`, `description`, `screenshot`, `demo`, `repo`).
-3. **Скриншот** — положить PNG в `assets/screenshots/`, обновить путь в `PORTFOLIO`.
+1. **Новая ссылка** — объект в `sections[]` у секции `type: "links"` в `items[]`.
+2. **Новый проект** — объект в `sections[]` у секции `type: "apps"` в `projects[]`.
+3. **Скриншот** — положить PNG в `assets/screenshots/`, обновить путь в `content/site.json`.
+4. **Новый тип блока** — добавить новую секцию в JSON и обработчик в `renderSection()` в `js/main.js`.
 
-Иконки ссылок — inline SVG в `ICONS` в `data.js`.
+Иконки ссылок — inline SVG в `ICONS` в `js/main.js`.
 
 ## Дизайн-система
 
@@ -41,7 +41,7 @@
 
 Push в `main` → GitHub Actions → Pages. В настройках репозитория: **Pages → Source: GitHub Actions**.
 
-DNS: `lair.volkula.com` → GitHub Pages (CNAME на `volkula.github.io` или A-записи GitHub).
+Домен по умолчанию: `volkula.github.io/link-tree/`.
 
 ## Ограничения
 
