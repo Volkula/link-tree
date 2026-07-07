@@ -29,6 +29,31 @@ jobs:
 
       - name: Prepare site artifact
         run: |
+          python - <<'PY'
+          import glob
+          import json
+          import os
+
+          os.makedirs("content", exist_ok=True)
+          os.makedirs("assets/works", exist_ok=True)
+
+          patterns = ("*.jpg", "*.jpeg", "*.png", "*.webp", "*.gif", "*.avif")
+          files = []
+          for pattern in patterns:
+            files.extend(glob.glob(os.path.join("assets", "works", pattern)))
+            files.extend(glob.glob(os.path.join("assets", "works", pattern.upper())))
+
+          unique_files = sorted(set(path.replace("\\", "/") for path in files))
+          items = []
+          for path in unique_files:
+            name = os.path.splitext(os.path.basename(path))[0]
+            title = name.replace("_", " ").replace("-", " ").strip()
+            items.append({"image": path, "title": title})
+
+          with open("content/works.json", "w", encoding="utf-8") as fp:
+            json.dump(items, fp, ensure_ascii=False, indent=2)
+          PY
+
           mkdir -p _site
           cp index.html _site/
           cp -r css js assets content _site/

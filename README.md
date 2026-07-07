@@ -63,6 +63,7 @@ content/sections.json — шаблоны секций
 content/links.json    — ссылки
 content/projects.json — проекты
 content/faq.json      — вопросы/ответы
+assets/works/         — папка автогалереи "Мои работы"
 css/styles.css      — стили (адаптив)
 js/main.js          — рендер секций и QR
 assets/             — favicon, скриншоты приложений
@@ -76,6 +77,7 @@ assets/             — favicon, скриншоты приложений
 3. `content/seo.json`, `content/hero.json`, `content/footer.json` — тексты страницы
 4. `content/sections.json` — порядок секций, заголовки, `collapsedByDefault`, привязка dataSource
 5. Добавляйте изображения в `assets/screenshots/` и указывайте путь в `projects.json`
+6. Для блока "Мои работы" просто складывайте изображения в `assets/works/` — галерея соберется автоматически при деплое
 
 ### Картинки в карточках ссылок
 

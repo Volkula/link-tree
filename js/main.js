@@ -268,6 +268,38 @@ function renderFaqSection(config) {
   return section;
 }
 
+function buildWorkCard(item, index) {
+  const card = document.createElement('article');
+  card.className = 'work-card';
+  const title = item.title || `Работа ${index + 1}`;
+  card.innerHTML = `<img class="work-shot" src="${item.image}" alt="${item.alt || title}" loading="lazy"><p class="work-title">${title}</p>`;
+  return card;
+}
+
+function renderWorksSection(config) {
+  const section = document.createElement('section');
+  section.className = 'section section-works';
+  section.appendChild(sectionHeader(config.heading, config.subheading));
+  const content = document.createElement('div');
+  content.className = 'section-content';
+
+  const grid = document.createElement('div');
+  grid.className = 'works-grid';
+  (config.items || []).forEach((item, index) => grid.appendChild(buildWorkCard(item, index)));
+
+  if ((config.items || []).length === 0) {
+    const empty = document.createElement('p');
+    empty.className = 'tagline';
+    empty.textContent = 'Пока нет файлов в assets/works/. Добавьте изображения, и они появятся автоматически.';
+    content.appendChild(empty);
+  } else {
+    content.appendChild(grid);
+  }
+
+  section.appendChild(content);
+  return section;
+}
+
 function renderUnknownSection(config) {
   const section = document.createElement('section');
   section.className = 'section';
@@ -285,6 +317,7 @@ function renderUnknownSection(config) {
 function renderSection(config) {
   if (config.type === 'links') return renderLinksSection(config);
   if (config.type === 'apps') return renderAppsSection(config);
+  if (config.type === 'works') return renderWorksSection(config);
   if (config.type === 'faq') return renderFaqSection(config);
   return renderUnknownSection(config);
 }
@@ -324,7 +357,7 @@ function hydrateSections(sectionTemplates, datasets) {
 
 async function loadConfig() {
   try {
-    const [seo, hero, footer, sections, links, projects, faq] = await Promise.all([
+    const [seo, hero, footer, sections, links, projects, faq, works] = await Promise.all([
       fetchJson('content/seo.json'),
       fetchJson('content/hero.json'),
       fetchJson('content/footer.json'),
@@ -332,13 +365,14 @@ async function loadConfig() {
       fetchJson('content/links.json'),
       fetchJson('content/projects.json'),
       fetchJson('content/faq.json'),
+      fetchJson('content/works.json').catch(() => []),
     ]);
 
     return {
       seo,
       hero,
       footer,
-      sections: hydrateSections(sections, { links, projects, faq }),
+      sections: hydrateSections(sections, { links, projects, faq, works }),
     };
   } catch {
     // Backward compatibility for cached old clients.

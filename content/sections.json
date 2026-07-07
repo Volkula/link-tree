@@ -24,6 +24,15 @@
     "collapsedByDefault": true
   },
   {
+    "id": "works-main",
+    "type": "works",
+    "heading": "Мои работы",
+    "subheading": "Галерея автоматически собирается из файлов в assets/works/",
+    "dataSource": "works",
+    "bindKey": "items",
+    "collapsedByDefault": false
+  },
+  {
     "id": "faq-main",
     "type": "faq",
     "heading": "FAQ / Как работаем",
