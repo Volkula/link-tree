@@ -1,9 +1,14 @@
+function hasQrSupport() {
+  return typeof QRCode !== 'undefined' && typeof QRCode.toCanvas === 'function';
+}
+
 function renderQr(canvas, url, size) {
+  if (!hasQrSupport()) return Promise.resolve(false);
   return QRCode.toCanvas(canvas, url, {
     width: size,
     margin: 1,
     color: { dark: '#1a1208', light: '#ffffff' },
-  });
+  }).then(() => true).catch(() => false);
 }
 
 function openQrModal(label, url) {
@@ -18,7 +23,13 @@ function openQrModal(label, url) {
 
   const canvas = document.createElement('canvas');
   body.appendChild(canvas);
-  renderQr(canvas, url, 240).then(() => modal.showModal());
+  renderQr(canvas, url, 240).then((ok) => {
+    if (ok) {
+      modal.showModal();
+      return;
+    }
+    window.open(url, '_blank', 'noopener,noreferrer');
+  });
 }
 
 function buildLinkCard(link) {
@@ -50,7 +61,12 @@ function buildLinkCard(link) {
   qrBtn.setAttribute('aria-label', `QR-код: ${link.label}`);
   const qrCanvas = document.createElement('canvas');
   qrBtn.appendChild(qrCanvas);
-  renderQr(qrCanvas, link.url, 56);
+  renderQr(qrCanvas, link.url, 56).then((ok) => {
+    if (!ok) {
+      qrBtn.style.display = 'none';
+      qrText.style.display = 'none';
+    }
+  });
 
   qrBtn.addEventListener('click', (event) => {
     event.preventDefault();
@@ -113,6 +129,10 @@ function init() {
   const linkGrid = document.getElementById('link-grid');
   const portfolioGrid = document.getElementById('portfolio-grid');
   const modal = document.getElementById('qr-modal');
+
+  if (!Array.isArray(LINKS) || !Array.isArray(PORTFOLIO)) {
+    return;
+  }
 
   LINKS.forEach((link) => linkGrid.appendChild(buildLinkCard(link)));
   PORTFOLIO.forEach((item) => portfolioGrid.appendChild(buildPortfolioCard(item)));
