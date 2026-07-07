@@ -206,7 +206,7 @@ function buildLinkCard(link) {
 
 function renderLinksSection(config) {
   const section = document.createElement('section');
-  section.className = 'section';
+  section.className = 'section section-links-primary';
   section.appendChild(sectionHeader(config.heading, config.subheading));
   const grid = document.createElement('div');
   grid.className = 'link-grid';

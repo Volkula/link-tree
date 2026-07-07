@@ -2,8 +2,8 @@
   {
     "id": "links-main",
     "type": "links",
-    "heading": "Связаться",
-    "subheading": "Заказы, каналы и соцсети",
+    "heading": "СВЯЗАТЬСЯ СО МНОЙ",
+    "subheading": "Главный блок: быстрые контакты, каналы и заказы",
     "dataSource": "links",
     "bindKey": "items",
     "collapsedByDefault": false

@@ -132,6 +132,53 @@ body {
   margin-bottom: 2.5rem;
 }
 
+.section-links-primary {
+  position: relative;
+  padding: 1.2rem;
+  border: 1px solid var(--border-strong);
+  border-radius: calc(var(--radius) + 4px);
+  background: linear-gradient(135deg, rgba(201, 162, 39, 0.14), rgba(28, 24, 20, 0.95));
+  box-shadow: var(--shadow);
+}
+
+.section-links-primary::before {
+  content: "PRIORITY";
+  position: absolute;
+  top: -0.62rem;
+  left: 1rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  color: var(--bg);
+  background: linear-gradient(180deg, var(--amber), var(--gold-soft));
+  border-radius: 999px;
+  padding: 0.2rem 0.5rem;
+  font-weight: 700;
+}
+
+.section-links-primary .section-head h2 {
+  font-size: clamp(1.45rem, 3.5vw, 1.9rem);
+  letter-spacing: 0.08em;
+}
+
+.section-links-primary .section-head p {
+  color: #d9cdbf;
+}
+
+.section-links-primary .link-card {
+  border-color: rgba(201, 162, 39, 0.34);
+  background: linear-gradient(135deg, rgba(36, 29, 21, 0.98), rgba(20, 17, 15, 0.98));
+}
+
+.section-links-primary .link-card:hover,
+.section-links-primary .link-card:focus-visible {
+  border-color: rgba(232, 184, 74, 0.75);
+}
+
+.section-links-primary .qr-thumb {
+  width: 68px;
+  height: 68px;
+}
+
 .section-head {
   margin-bottom: 1.1rem;
   display: flex;
