@@ -27,7 +27,7 @@
     "id": "works-main",
     "type": "works",
     "heading": "Мои работы",
-    "subheading": "Галерея автоматически собирается из файлов в assets/works/",
+    "subheading": "Галерея работ",
     "dataSource": "works",
     "bindKey": "items",
     "collapsedByDefault": false
