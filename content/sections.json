@@ -9,10 +9,19 @@
     "collapsedByDefault": false
   },
   {
+    "id": "works-main",
+    "type": "works",
+    "heading": "Мои работы",
+    "subheading": "",
+    "dataSource": "works",
+    "bindKey": "items",
+    "collapsedByDefault": false
+  },
+  {
     "id": "apps-main",
     "type": "apps",
     "heading": "Приложения на заказ",
-    "subheading": "Пишу под задачу",
+    "subheading": "",
     "banner": {
       "title": "Разработка веб-приложений",
       "description": "Нужен генератор, конфигуратор, тренажер или утилита в браузере? Соберу от идеи до деплоя на GitHub Pages или ваш хостинг.",
@@ -24,19 +33,10 @@
     "collapsedByDefault": true
   },
   {
-    "id": "works-main",
-    "type": "works",
-    "heading": "Мои работы",
-    "subheading": "Галерея работ",
-    "dataSource": "works",
-    "bindKey": "items",
-    "collapsedByDefault": false
-  },
-  {
     "id": "faq-main",
     "type": "faq",
     "heading": "FAQ / Как работаем",
-    "subheading": "Быстрые ответы по заказам и разработке",
+    "subheading": "",
     "dataSource": "faq",
     "bindKey": "items",
     "collapsedByDefault": true
