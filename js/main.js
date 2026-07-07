@@ -68,14 +68,14 @@ function makeCollapsibleSection(section, sectionId, collapsedByDefault, state) {
   button.className = 'collapse-toggle';
   button.setAttribute('aria-controls', contentId);
   button.setAttribute('aria-expanded', String(!isCollapsed));
-  button.innerHTML = `<span>Свернуть: ${titleText}</span><span class="collapse-chevron" aria-hidden="true">▾</span>`;
+  button.innerHTML = `<span>Свернуть</span><span class="collapse-chevron" aria-hidden="true">▾</span>`;
   head.appendChild(button);
 
   const applyState = (collapsed) => {
     content.hidden = collapsed;
     section.classList.toggle('is-collapsed', collapsed);
     button.setAttribute('aria-expanded', String(!collapsed));
-    button.firstElementChild.textContent = `${collapsed ? 'Развернуть' : 'Свернуть'}: ${titleText}`;
+    button.firstElementChild.textContent = `${collapsed ? 'Развернуть' : 'Свернуть'}`;
     state[collapseId] = collapsed;
     saveCollapsedState(state);
   };
