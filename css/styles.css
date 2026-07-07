@@ -200,8 +200,8 @@ body {
 }
 
 .section-links-primary .qr-thumb {
-  width: 68px;
-  height: 68px;
+  width: 100px;
+  height: 100px;
 }
 
 .section-head {
@@ -455,8 +455,8 @@ body {
 }
 
 .qr-thumb {
-  width: 64px;
-  height: 64px;
+  width: 92px;
+  height: 92px;
   padding: 4px;
   background: #fff;
   border: none;

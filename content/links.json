@@ -3,18 +3,21 @@
     "label": "Крафт и 3D-печать на заказ",
     "description": "Напишите в личку — обсудим модель, печать и покрас",
     "url": "https://t.me/Volkula",
-    "icon": "telegram"
+    "icon": "telegram",
+    "qrAsset": "assets/qr/order.png"
   },
   {
     "label": "Канал мастерской",
     "description": "Берлогово в Telegram — процесс, работы и мысли",
     "url": "https://t.me/barklair",
-    "icon": "telegram"
+    "icon": "telegram",
+    "qrAsset": "assets/qr/channel.png"
   },
   {
     "label": "TikTok мастерской",
     "description": "Видео с 3D-печати, покраса, косплея и крафта",
     "url": "https://www.tiktok.com/@barklair",
-    "icon": "tiktok"
+    "icon": "tiktok",
+    "qrAsset": "assets/qr/tiktok.png"
   }
 ]

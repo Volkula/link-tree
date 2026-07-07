@@ -85,7 +85,7 @@ function makeCollapsibleSection(section, sectionId, collapsedByDefault, state) {
   return section;
 }
 
-function openQrModal(label, url) {
+function openQrModal(label, url, qrAsset) {
   const modal = document.getElementById('qr-modal');
   const body = document.getElementById('qr-modal-body');
   const title = document.getElementById('qr-modal-title');
@@ -95,16 +95,27 @@ function openQrModal(label, url) {
   urlEl.textContent = url;
   body.replaceChildren();
 
+  if (qrAsset) {
+    const img = document.createElement('img');
+    img.src = qrAsset;
+    img.alt = `QR для ${label}`;
+    img.width = 320;
+    img.height = 320;
+    body.appendChild(img);
+    modal.showModal();
+    return;
+  }
+
   const canvas = document.createElement('canvas');
   body.appendChild(canvas);
-  renderQr(canvas, url, 240).then((ok) => {
+  renderQr(canvas, url, 320).then((ok) => {
     if (!ok) {
       body.replaceChildren();
       const img = document.createElement('img');
-      img.src = getQrImageUrl(url, 240);
+      img.src = getQrImageUrl(url, 320);
       img.alt = `QR для ${label}`;
-      img.width = 240;
-      img.height = 240;
+      img.width = 320;
+      img.height = 320;
       body.appendChild(img);
     }
     modal.showModal();
@@ -171,35 +182,41 @@ function buildLinkCard(link) {
 
   const actions = document.createElement('div');
   actions.className = 'link-card-actions';
-  const qrText = document.createElement('span');
-  qrText.className = 'qr-label';
-  qrText.textContent = 'QR';
 
   const qrBtn = document.createElement('button');
   qrBtn.type = 'button';
   qrBtn.className = 'qr-thumb';
   qrBtn.setAttribute('aria-label', `QR-код: ${link.label}`);
-  const qrCanvas = document.createElement('canvas');
-  qrBtn.appendChild(qrCanvas);
-  renderQr(qrCanvas, link.url, 56).then((ok) => {
-    if (!ok) {
-      qrCanvas.remove();
-      const img = document.createElement('img');
-      img.src = getQrImageUrl(link.url, 56);
-      img.alt = `QR для ${link.label}`;
-      img.width = 56;
-      img.height = 56;
-      qrBtn.appendChild(img);
-    }
-  });
+  if (link.qrAsset) {
+    const img = document.createElement('img');
+    img.src = link.qrAsset;
+    img.alt = `QR для ${link.label}`;
+    img.width = 84;
+    img.height = 84;
+    qrBtn.appendChild(img);
+  } else {
+    const qrCanvas = document.createElement('canvas');
+    qrBtn.appendChild(qrCanvas);
+    renderQr(qrCanvas, link.url, 84).then((ok) => {
+      if (!ok) {
+        qrCanvas.remove();
+        const img = document.createElement('img');
+        img.src = getQrImageUrl(link.url, 84);
+        img.alt = `QR для ${link.label}`;
+        img.width = 84;
+        img.height = 84;
+        qrBtn.appendChild(img);
+      }
+    });
+  }
 
   qrBtn.addEventListener('click', (event) => {
     event.preventDefault();
     event.stopPropagation();
-    openQrModal(link.label, link.url);
+    openQrModal(link.label, link.url, link.qrAsset);
   });
 
-  actions.append(qrBtn, qrText);
+  actions.append(qrBtn);
   card.append(main, actions);
   return card;
 }
