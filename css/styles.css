@@ -250,6 +250,7 @@ body {
   margin-bottom: 0.2rem;
   font-weight: 700;
   font-size: 1rem;
+  flex-wrap: wrap;
 }
 
 .link-icon {
@@ -257,6 +258,15 @@ body {
   height: 1.35rem;
   flex-shrink: 0;
   color: var(--gold);
+}
+
+.link-media {
+  display: block;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.35);
 }
 
 .link-card-desc {
@@ -480,6 +490,12 @@ body {
   display: block;
   max-width: 100%;
   height: auto !important;
+}
+
+.qr-modal-body img {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 .qr-modal-url {

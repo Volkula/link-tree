@@ -20,6 +20,11 @@ function renderQr(canvas, url, size) {
   }).then(() => true).catch(() => false);
 }
 
+function getQrImageUrl(url, size) {
+  const encoded = encodeURIComponent(url);
+  return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encoded}`;
+}
+
 function sectionHeader(heading, subheading) {
   const head = document.createElement('div');
   head.className = 'section-head';
@@ -93,9 +98,48 @@ function openQrModal(label, url) {
   const canvas = document.createElement('canvas');
   body.appendChild(canvas);
   renderQr(canvas, url, 240).then((ok) => {
-    if (ok) modal.showModal();
-    else window.open(url, '_blank', 'noopener,noreferrer');
+    if (!ok) {
+      body.replaceChildren();
+      const img = document.createElement('img');
+      img.src = getQrImageUrl(url, 240);
+      img.alt = `QR для ${label}`;
+      img.width = 240;
+      img.height = 240;
+      body.appendChild(img);
+    }
+    modal.showModal();
   });
+}
+
+function createLinkMedia(link) {
+  if (link.image) {
+    const img = document.createElement('img');
+    img.className = 'link-media';
+    img.src = link.image;
+    img.alt = link.imageAlt || link.label || 'Лого';
+    img.loading = 'lazy';
+
+    let width = 36;
+    let height = 36;
+    if (typeof link.imageSize === 'number') {
+      width = link.imageSize;
+      height = link.imageSize;
+    } else if (link.imageSize && typeof link.imageSize === 'object') {
+      width = link.imageSize.width || width;
+      height = link.imageSize.height || height;
+    }
+    img.style.width = `${width}px`;
+    img.style.height = `${height}px`;
+    return img;
+  }
+
+  if (link.icon && ICONS[link.icon]) {
+    const span = document.createElement('span');
+    span.innerHTML = ICONS[link.icon];
+    return span.firstElementChild;
+  }
+
+  return null;
 }
 
 function buildLinkCard(link) {
@@ -107,7 +151,17 @@ function buildLinkCard(link) {
 
   const main = document.createElement('div');
   main.className = 'link-card-main';
-  main.innerHTML = `<div class="link-card-label">${ICONS[link.icon] || ''}<span>${link.label}</span></div><p class="link-card-desc">${link.description || ''}</p>`;
+  const label = document.createElement('div');
+  label.className = 'link-card-label';
+  const media = createLinkMedia(link);
+  if (media) label.appendChild(media);
+  const labelText = document.createElement('span');
+  labelText.textContent = link.label;
+  label.appendChild(labelText);
+  const desc = document.createElement('p');
+  desc.className = 'link-card-desc';
+  desc.textContent = link.description || '';
+  main.append(label, desc);
 
   const actions = document.createElement('div');
   actions.className = 'link-card-actions';
@@ -123,8 +177,13 @@ function buildLinkCard(link) {
   qrBtn.appendChild(qrCanvas);
   renderQr(qrCanvas, link.url, 56).then((ok) => {
     if (!ok) {
-      qrBtn.style.display = 'none';
-      qrText.style.display = 'none';
+      qrCanvas.remove();
+      const img = document.createElement('img');
+      img.src = getQrImageUrl(link.url, 56);
+      img.alt = `QR для ${link.label}`;
+      img.width = 56;
+      img.height = 56;
+      qrBtn.appendChild(img);
     }
   });
 
