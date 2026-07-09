@@ -15,9 +15,16 @@
   },
   {
     "label": "TikTok мастерской",
-    "description": "Видео с 3D-печати, покраса, косплея и крафта",
+    "description": "Видео о 3D-печати, покрасе, косплее и крафте",
     "url": "https://www.tiktok.com/@barklair",
     "icon": "tiktok",
     "qrAsset": "assets/qr/tiktok.png"
+  },
+  {
+    "label": "3Д Модели на заказ",
+    "description": "Создание 3д моделей для косплея",
+    "url": "@alaska_png",
+    "icon": "telegram",
+    "qrAsset": "assets/qr/alaska.png"
   }
 ]
