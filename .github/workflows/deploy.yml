@@ -79,6 +79,9 @@ jobs:
 
           galleries = []
           for name in sorted(os.listdir(works_root)):
+            if name.startswith("."):
+              continue
+
             gallery_dir = os.path.join(works_root, name)
             if not os.path.isdir(gallery_dir):
               continue

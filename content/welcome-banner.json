@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "storageKey": "barklair:welcome-banner:v1",
+  "eyebrow": "Берлогово",
+  "title": "Загляните в Telegram",
+  "description": "В канале мастерской — процесс, новые работы и заказы. Подпишитесь, чтобы ничего не пропустить.",
+  "ctaLabel": "Перейти в Telegram",
+  "ctaUrl": "https://t.me/barklair",
+  "dismissLabel": "Позже"
+}

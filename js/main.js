@@ -6,6 +6,7 @@ const ICONS = {
 const APP_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 20h8M12 18v2"/><path d="M7 9l3 3-3 3M12 15h5"/></svg>';
 const AVATAR_ICON = '<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="58" stroke="currentColor" stroke-width="2" opacity="0.35"/><path d="M38 78c4-18 14-28 22-28s18 10 22 28" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="46" cy="52" r="4" fill="currentColor"/><circle cx="74" cy="52" r="4" fill="currentColor"/><path d="M28 42c8-16 24-24 32-24s24 8 32 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/></svg>';
 const COLLAPSE_KEY = 'barklair:collapsed-sections:v1';
+const DEFAULT_WELCOME_KEY = 'barklair:welcome-banner:v1';
 
 function hasQrSupport() {
   return typeof QRCode !== 'undefined' && typeof QRCode.toCanvas === 'function';
@@ -376,9 +377,17 @@ function hydrateSections(sectionTemplates, datasets) {
   });
 }
 
+async function loadWelcomeBanner() {
+  try {
+    return await fetchJson('content/welcome-banner.json');
+  } catch {
+    return null;
+  }
+}
+
 async function loadConfig() {
   try {
-    const [seo, hero, footer, sections, links, projects, faq, works] = await Promise.all([
+    const [seo, hero, footer, sections, links, projects, faq, works, welcomeBanner] = await Promise.all([
       fetchJson('content/seo.json'),
       fetchJson('content/hero.json'),
       fetchJson('content/footer.json'),
@@ -389,12 +398,14 @@ async function loadConfig() {
       fetchJson('content/work-galleries.json')
         .catch(() => fetchJson('content/works.json'))
         .catch(() => []),
+      loadWelcomeBanner(),
     ]);
 
     return {
       seo,
       hero,
       footer,
+      welcomeBanner,
       sections: hydrateSections(sections, { links, projects, faq, works }),
     };
   } catch {
@@ -462,11 +473,70 @@ function bindModalEvents() {
   });
 }
 
+function markWelcomeBannerSeen(storageKey) {
+  try {
+    localStorage.setItem(storageKey, 'dismissed');
+  } catch {
+    // Ignore storage errors in private mode.
+  }
+}
+
+function showWelcomeBanner(banner) {
+  if (!banner?.enabled) return;
+
+  const storageKey = banner.storageKey || DEFAULT_WELCOME_KEY;
+  try {
+    if (localStorage.getItem(storageKey) === 'dismissed') return;
+  } catch {
+    return;
+  }
+
+  const modal = document.getElementById('welcome-modal');
+  if (!modal) return;
+
+  const eyebrow = document.getElementById('welcome-modal-eyebrow');
+  const title = document.getElementById('welcome-modal-title');
+  const text = document.getElementById('welcome-modal-text');
+  const cta = document.getElementById('welcome-modal-cta');
+  const dismiss = document.getElementById('welcome-modal-dismiss');
+  const closeBtn = modal.querySelector('.welcome-modal-close');
+
+  if (eyebrow) eyebrow.textContent = banner.eyebrow || '';
+  if (title) title.textContent = banner.title || 'Добро пожаловать';
+  if (text) text.textContent = banner.description || '';
+  if (cta) {
+    cta.href = banner.ctaUrl || '#';
+    cta.textContent = banner.ctaLabel || 'Перейти в Telegram';
+  }
+  if (dismiss) dismiss.textContent = banner.dismissLabel || 'Позже';
+
+  const dismissBanner = () => {
+    markWelcomeBannerSeen(storageKey);
+    if (modal.open) modal.close();
+  };
+
+  closeBtn?.addEventListener('click', dismissBanner, { once: true });
+  dismiss?.addEventListener('click', dismissBanner, { once: true });
+  cta?.addEventListener('click', () => {
+    markWelcomeBannerSeen(storageKey);
+    if (modal.open) modal.close();
+  }, { once: true });
+  modal.addEventListener('close', () => markWelcomeBannerSeen(storageKey), { once: true });
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) dismissBanner();
+  }, { once: true });
+
+  window.setTimeout(() => {
+    if (!modal.open) modal.showModal();
+  }, 450);
+}
+
 async function init() {
   bindModalEvents();
   try {
     const config = await loadConfig();
     renderPage(config);
+    showWelcomeBanner(config.welcomeBanner);
   } catch (error) {
     const app = document.getElementById('app');
     if (app) app.innerHTML = '<p class="tagline">Не удалось загрузить контент сайта. Проверьте JSON-файлы в папке content/.</p>';

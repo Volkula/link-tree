@@ -698,6 +698,92 @@ body {
   background: rgba(255, 255, 255, 0.06);
 }
 
+.welcome-modal {
+  width: min(92vw, 420px);
+  padding: 1.35rem 1.2rem 1.15rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: linear-gradient(160deg, rgba(28, 22, 16, 0.98), rgba(14, 11, 9, 0.98));
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+
+.welcome-modal::backdrop {
+  background: rgba(0, 0, 0, 0.76);
+  backdrop-filter: blur(4px);
+}
+
+.welcome-eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+}
+
+.welcome-modal h2 {
+  margin: 0 0 0.65rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 5vw, 1.55rem);
+  line-height: 1.2;
+}
+
+.welcome-modal-text {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.welcome-modal-actions {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.welcome-cta {
+  display: inline-flex;
+  justify-content: center;
+  width: 100%;
+  text-align: center;
+}
+
+.welcome-dismiss {
+  border: 1px solid rgba(201, 162, 39, 0.22);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 0.55rem 0.9rem;
+  cursor: pointer;
+}
+
+.welcome-dismiss:hover {
+  color: var(--text);
+  border-color: rgba(201, 162, 39, 0.42);
+}
+
+.welcome-modal-close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.welcome-modal-close:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
 @media (max-width: 420px) {
   .page {
     width: min(100% - 1.25rem, var(--max-width));

@@ -30,6 +30,17 @@
     <p class="qr-modal-url" id="qr-modal-url"></p>
   </dialog>
 
+  <dialog class="welcome-modal" id="welcome-modal" aria-labelledby="welcome-modal-title">
+    <button class="welcome-modal-close" type="button" aria-label="Закрыть">&times;</button>
+    <p class="welcome-eyebrow" id="welcome-modal-eyebrow"></p>
+    <h2 id="welcome-modal-title"></h2>
+    <p class="welcome-modal-text" id="welcome-modal-text"></p>
+    <div class="welcome-modal-actions">
+      <a class="cta welcome-cta" id="welcome-modal-cta" href="#" target="_blank" rel="noopener noreferrer"></a>
+      <button class="welcome-dismiss" type="button" id="welcome-modal-dismiss"></button>
+    </div>
+  </dialog>
+
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
   <script type="module" src="js/main.js"></script>
 </body>
